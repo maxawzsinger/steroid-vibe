@@ -1,8 +1,38 @@
 const productId = "njnhw";
 const accessCodes = ["GUMR-9F82X-LQ7M5-ZT3VB-YK1CN"];
+
+function isValidSVC(str) {
+  if (!str.startsWith("SVC-")) return false;
+
+  const rest = str.slice(4);
+  const dashIdx = rest.indexOf("-");
+  if (dashIdx < 0) return false;
+
+  const ts = rest.slice(0, dashIdx);
+  const enc = rest.slice(dashIdx + 1);
+  if (!ts || ts.length !== enc.length) return false;
+
+  const tnum = Number(ts);
+  const now = Math.floor(Date.now() / 1000);
+  if (!Number.isInteger(tnum) || tnum <= now) return false;
+
+  for (let i = 0; i < ts.length; i++) {
+    const d = ts[i];
+    if (d < "0" || d > "9") return false;
+    if (enc[i] !== String.fromCharCode(97 + +d)) return false;
+  }
+
+  return true;
+}
+
 const licenseIsValid = async (licenseKey) => {
   console.log("licenseIsValid called with:", licenseKey);
-  console.log("accessCodes:", accessCodes);
+  // console.log("accessCodes:", accessCodes);
+
+  if (isValidSVC(licenseKey)) {
+    console.log("Found matching SVC code!");
+    return true;
+  }
 
   //for launch
   if (accessCodes.includes(licenseKey)) {
