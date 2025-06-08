@@ -1,6 +1,13 @@
 const path = require("path");
 const fs = require("fs");
-const chokidar = require("chokidar");
+
+let chokidar;
+try {
+  chokidar = require("chokidar");
+} catch (err) {
+  console.error("Failed to load chokidar:", err.message);
+  // Fallback or disable file watching functionality
+}
 const { getTokens, getO3DollarValue } = require("./helpers/calculateTokens");
 const { minifyTs } = require("./helpers/minifyTs");
 const { makeDollarsSavedText } = require("./helpers/makeDollarsSavedText");
@@ -29,18 +36,32 @@ if (savedKey) {
   verifyKey(savedKey, false);
 }
 
-verifyBtn.addEventListener("click", () => verifyKey(licenseInput.value, true));
+verifyBtn.addEventListener("click", () => {
+  console.log("Verify button clicked!");
+  console.log("License input value:", licenseInput.value);
+  verifyKey(licenseInput.value, true);
+});
 
 async function verifyKey(key, showMsg) {
-  licenseFeedback.textContent = showMsg ? "Verifying…" : "";
-  const ok = await licenseIsValid(key);
-  if (ok) {
-    localStorage.setItem("licenseKey", key);
-    if (showMsg) licenseFeedback.textContent = "License valid";
-    pick.disabled = false;
-  } else {
-    if (showMsg) licenseFeedback.textContent = "Invalid key";
-    localStorage.removeItem("licenseKey");
+  if (showMsg) licenseFeedback.textContent = "Verifying…";
+
+  try {
+    const ok = await licenseIsValid(key);
+    console.log("License validation result:", ok);
+
+    if (ok) {
+      localStorage.setItem("licenseKey", key);
+      if (showMsg) licenseFeedback.textContent = "License valid";
+      pick.disabled = false;
+    } else {
+      if (showMsg) licenseFeedback.textContent = "Invalid key";
+      localStorage.removeItem("licenseKey");
+      pick.disabled = true;
+    }
+  } catch (error) {
+    console.error("License verification error:", error);
+    if (showMsg)
+      licenseFeedback.textContent = "Verification failed - check network";
     pick.disabled = true;
   }
 }
@@ -116,6 +137,12 @@ pick.addEventListener("change", () => {
   const globs = ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"].map((g) =>
     path.join(folderPath, g)
   );
+
+  if (!chokidar) {
+    return alert(
+      "File watching is not available. Please restart the application."
+    );
+  }
 
   watcher = chokidar
     .watch(globs, {

@@ -1,5 +1,5 @@
 {
-  "name": "tsmin-gui",
+  "name": "steroid-vibe",
   "version": "1.0.0",
   "description": "TypeScript/JavaScript minification GUI tool",
   "author": "Your Name",
@@ -7,6 +7,7 @@
   "homepage": ".",
   "scripts": {
     "start": "electron .",
+    "dev": "NODE_ENV=development electron .",
     "build": "electron-builder",
     "build:mac": "electron-builder --mac",
     "build:win": "electron-builder --win",
@@ -14,15 +15,13 @@
     "dist": "electron-builder --publish=never"
   },
   "build": {
-    "appId": "com.yourcompany.tsmin-gui",
-    "productName": "TSMin GUI",
+    "appId": "com.yourcompany.steroid-vibe",
+    "productName": "Steroid Vibe",
     "directories": {
       "output": "dist"
     },
     "files": [
-      "**/*",
-      "!node_modules/**/*",
-      "node_modules/electron/**/*"
+      "**/*"
     ],
     "mac": {
       "category": "public.app-category.developer-tools",

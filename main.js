@@ -11,7 +11,10 @@ function createWindow() {
     },
   });
 
-  win.webContents.openDevTools();
+  // Open dev tools only in development
+  if (process.env.NODE_ENV === "development") {
+    win.webContents.openDevTools();
+  }
 
   win.loadFile(path.join(__dirname, "index.html"));
 }

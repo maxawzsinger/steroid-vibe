@@ -1,4 +1,4 @@
-# TSMin GUI
+# Steroid Vibe
 
 A desktop GUI application for TypeScript and JavaScript minification.
 

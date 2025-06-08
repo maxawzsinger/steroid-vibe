@@ -1,8 +1,15 @@
-const productId = "";
+const productId = "njnhw";
 const accessCodes = ["GUMR-9F82X-LQ7M5-ZT3VB-YK1CN"];
 const licenseIsValid = async (licenseKey) => {
+  console.log("licenseIsValid called with:", licenseKey);
+  console.log("accessCodes:", accessCodes);
+
   //for launch
-  if (accessCodes.includes(licenseKey)) return true;
+  if (accessCodes.includes(licenseKey)) {
+    console.log("Found matching access code!");
+    return true;
+  }
+  console.log("No matching access code, checking with Gumroad...");
 
   const form = new URLSearchParams();
   form.append("product_id", productId);
